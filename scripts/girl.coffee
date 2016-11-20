@@ -18,7 +18,7 @@ module.exports = (robot) ->
       .get() (err, res, body) ->
         jerkOffMaterials = JSON.parse(body)
 
-        index = Math.floor(Math.random() * jerkOffMaterials.count - 1)
+        index = Math.floor(Math.random() * (jerkOffMaterials.count - 1))
         
         robot.send girl, "今日のおかずは　こちらデス"
         actress = jerkOffMaterials.Actresses[index]
