@@ -20,7 +20,7 @@ module.exports = (robot) ->
         robot.send envelope, 'みなさん　予定の空いている日を入れてほしい　デス'
       else
         dates = data.map (item) ->
-          return moment.utc(item.date).startOf('date').format()
+          return moment.utc(item.date).startOf('date').format('LL (ddd)')
         .join('\n')
         robot.send envelope, "次回　koiki　の開催可能日は\n#{dates}\nデス"
         robot.send taka66,   "場所の予約のほど　よろしくお願いします　デス"
@@ -37,6 +37,6 @@ module.exports = (robot) ->
         msg.send 'みなさん　予定の空いている日を入れてほしい　デス'
       else
         dates = data.map (item) ->
-          return moment.utc(item.date).startOf('date').format()
+          return moment.utc(item.date).startOf('date').format('LL (ddd)')
         .join('\n')
         msg.send "次回　koiki　の開催可能日は\n#{dates}\nデス"
