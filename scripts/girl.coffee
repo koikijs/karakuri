@@ -5,27 +5,29 @@ girl = room: "C2L1Y13R7" # girl
 module.exports = (robot) ->
 
   getGirls = () ->
-    girlApi = 'http://bjin.me/api/?type=rand&count=1&format=json'
-    robot.http(girlApi)
+    robot.http('http://bjin.me/api/?type=rand&count=1&format=json')
       .get() (err, res, body) ->
         girls = JSON.parse(body)
         robot.send girl, "今日の美女は　こちらデス"
-        attachments = []
         girls.map (data) ->
           imageURL = data.thumb.replace(/^http\:\/\//, '')
-          attachments.push({
-            "color": "#36a64f",
-            "title": "#{data.category}",
-            "title_link": "#{data.link}",
-            "image_url": "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200"
-          })
-        json = JSON.stringify({attachments: attachments});
-        payload = "payload=" + encodeURIComponent(json)
-        robot.http(process.env.HUBOT_SLACK_INCOMING_WEBHOOK_GOHAN)
-          .header('content-type', 'application/x-www-form-urlencoded')
-          .post(payload) (err, res, body) ->
-            console.log err
+          robot.send girl, data.category + " " + "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200"
+
+  getJerkOffMaterials = () ->
+    robot.http('http://apiactress.appspot.com/api/1/getdata/ka')
+      .get() (err, res, body) ->
+        jerkOffMaterials = JSON.parse(body)
+
+        index = Math.floor(Math.random() * (jerkOffMaterials.count - 1))
+        
+        robot.send girl, "今日のおかずは　こちらデス"
+        actress = jerkOffMaterials.Actresses[index]
+        imageURL = actress.thumb.replace("/thumbnail", "")
+        
+        robot.send girl, actress.yomi + " " + imageURL
 
   # Direct message
   robot.hear /^(美(女|人))$/, () ->
     getGirls null, true, "Asia/Tokyo"
+  robot.hear /^(おかず)$/, () ->
+    getJerkOffMaterials null, true, "Asia/Tokyo"
