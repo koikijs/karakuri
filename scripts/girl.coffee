@@ -9,7 +9,7 @@ module.exports = (robot) ->
         girls.map (data) ->
           imageURL = data.thumb.replace(/^http\:\/\//, '')
           msg.send """
-                    今日の美女は　こちらデス
+                    今日の美女は こちらデス
                     #{data.category} https://images.weserv.nl/?url=#{imageURL}&w=200&h=200
                    """
 
@@ -24,7 +24,7 @@ module.exports = (robot) ->
         imageURL = actress.thumb.replace("/thumbnail", "")
         
         msg.send """
-                  今日のおかずは　こちらデス
+                  今日のおかずは こちらデス
                   #{actress.yomi} #{imageURL}
                  """
 
