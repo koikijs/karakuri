@@ -8,7 +8,10 @@ module.exports = (robot) ->
         girls = JSON.parse(body)
         girls.map (data) ->
           imageURL = data.thumb.replace(/^http\:\/\//, '')
-          msg.send "今日の美女は　こちらデス " + data.category + " " + "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200"
+          msg.send """
+                    今日の美女は　こちらデス
+                    #{data.category} https://images.weserv.nl/?url=#{imageURL}&w=200&h=200
+                   """
 
   getJerkOffMaterials = (msg) ->
     robot.http('http://apiactress.appspot.com/api/1/getdata/ka')
@@ -20,7 +23,10 @@ module.exports = (robot) ->
         actress = jerkOffMaterials.Actresses[index]
         imageURL = actress.thumb.replace("/thumbnail", "")
         
-        msg.send "今日のおかずは　こちらデス " + actress.yomi + " " + imageURL
+        msg.send """
+                  今日のおかずは　こちらデス
+                  #{actress.yomi} #{imageURL}
+                 """
 
   # Direct message
   robot.hear /^(美(女|人))$/, (msg) ->
