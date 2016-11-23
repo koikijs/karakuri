@@ -7,19 +7,20 @@ mode = 'normal'
 
 module.exports = (robot) ->
 
-  sendReaction = (msg) ->
-    randomInt = Math.floor(Math.random() * 25)
+  # probability ... number, 0%~100%
+  sendReaction = (msg, probability) ->
+    randomInt = Math.floor(Math.random() * ((100/probability)*5))
     nabReaction = " (ナブチ様風 反応 デス)"
     switch randomInt
-      when 1
+      when 0
         msg.send "!!!" + nabReaction
-      when 2
+      when 1
         msg.send "！" + nabReaction
-      when 3
+      when 2
         msg.send "おー" + nabReaction
-      when 4
+      when 3
         msg.send "あー" + nabReaction
-      when 5
+      when 4
         msg.send "おお" + nabReaction
       else
 
@@ -55,4 +56,7 @@ module.exports = (robot) ->
       msg.send msg.random JSON.parse(robot.brain.get('nabs')||'[]')
   
   robot.hear /.*/, (msg) ->
-    sendReaction msg 
+    sendReaction msg, 20
+
+  robot.hear /^なぶち(|さん|様)$/, (msg) ->
+    sendReaction msg, 100
