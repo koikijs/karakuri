@@ -58,5 +58,5 @@ module.exports = (robot) ->
   robot.hear /.*/, (msg) ->
     sendReaction msg, 20
 
-  robot.hear /^なぶち(|さん|様)$/, (msg) ->
+  robot.hear /なぶち(|さん|様)/, (msg) ->
     sendReaction msg, 100
