@@ -77,6 +77,8 @@ module.exports = (robot) ->
 
   # startup
   robot.send test, 'むくり'
+  robot.send envelope, 'ナブチ様　起きてください　デス'
+  robot.http('https://nabnab-bot.herokuapp.com/')
   setTimeout () ->
     msgs = JSON.parse(robot.brain.get('msgs')||'[]')
     message = msgs[Math.floor(Math.random() * msgs.length)] || ''
