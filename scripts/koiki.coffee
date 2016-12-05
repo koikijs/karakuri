@@ -26,7 +26,7 @@ module.exports = (robot) ->
         robot.send taka66,   "場所の予約のほど　よろしくお願いします　デス"
   , null, true, "Asia/Tokyo"
 
-  robot.hear /(次|つぎ)の(| |　)(小粋|koiki|こいき)(| |　)(|は)(| |　)いつ(|ごろ|頃)(|になる|になりそう|ですか|になりそうですか|にする)(？|\?)/i, (msg) ->
+  robot.hear /(次|つぎ)の(| |　)(小粋|koiki|こいき|忘年会)(| |　)(|は)(| |　)いつ(|ごろ|頃)(|になる|になりそう|ですか|になりそうですか|にする)(？|\?)/i, (msg) ->
     msg.send 'ただいま確認中　デス'
     robot.http('https://monstera.herokuapp.com/api/koikijs/next').get() (err, res, body) ->
 
