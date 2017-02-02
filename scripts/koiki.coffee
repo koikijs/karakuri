@@ -15,10 +15,10 @@ module.exports = (robot) ->
     robot.http('https://monstera.herokuapp.com/api/koikijs/next').get() (err, res, body) ->
       data = JSON.parse(body)
       if data.candidates.length == 0
-        robot.send envelope, '開催可能な日が　見つけられない　デス'
-        robot.send envelope, 'https://monstera.herokuapp.com/events/koikijs/availables'
-        robot.send envelope, "#{data.noplans.join(', ')} の予定が一つも入ってない　デス"
-        robot.send envelope, 'はやく　いれんかい　ボケ　デス'
+        robot.send envelope, "開催可能な日が　見つけられない　デス\n" +
+                             "https://monstera.herokuapp.com/events/koikijs/availables\n" +
+                             "#{data.noplans.join(', ')} の予定が一つも入ってない　デス\n" +
+                             "はやく　いれんかい　ボケ　デス"
       else
         dates = data.candidates.map (item) ->
           return moment.utc(item.date).startOf('date').format('LL (ddd)')
@@ -33,10 +33,10 @@ module.exports = (robot) ->
 
       data = JSON.parse(body)
       if data.candidates.length == 0
-        msg.send '開催可能な日が　見つけられない　デス'
-        msg.send 'https://monstera.herokuapp.com/events/koikijs/availables'
-        msg.send "#{data.noplans.join(', ')} の予定が一つも入ってない　デス"
-        msg.send 'はやく　いれんかい　ボケ　デス'
+        msg.send "開催可能な日が　見つけられない　デス\n" +
+                 "https://monstera.herokuapp.com/events/koikijs/availables\n" +
+                 "#{data.noplans.join(', ')} の予定が一つも入ってない　デス\n" +
+                 "はやく　いれんかい　ボケ　デス\n"
 
       else
         dates = data.candidates.map (item) ->
