@@ -17,7 +17,8 @@ module.exports = (robot) ->
       if data.candidates.length == 0
         robot.send envelope, '開催可能な日が　見つけられない　デス'
         robot.send envelope, 'https://monstera.herokuapp.com/events/koikijs/availables'
-        robot.send envelope, "#{data.noplans.join(', ')} 予定の空いている日を入れてほしい　デス"
+        robot.send envelope, "#{data.noplans.join(', ')} の予定が一つも入ってない　デス"
+        robot.send envelope, 'はやく　いれんかい　ボケ　デス'
       else
         dates = data.candidates.map (item) ->
           return moment.utc(item.date).startOf('date').format('LL (ddd)')
@@ -31,12 +32,14 @@ module.exports = (robot) ->
     robot.http('https://monstera.herokuapp.com/api/koikijs/next').get() (err, res, body) ->
 
       data = JSON.parse(body)
-      if data.length == 0
+      if data.candidates.length == 0
         msg.send '開催可能な日が　見つけられない　デス'
         msg.send 'https://monstera.herokuapp.com/events/koikijs/availables'
-        msg.send 'みなさん　予定の空いている日を入れてほしい　デス'
+        msg.send "#{data.noplans.join(', ')} の予定が一つも入ってない　デス"
+        msg.send 'はやく　いれんかい　ボケ　デス'
+
       else
-        dates = data.map (item) ->
+        dates = data.candidates.map (item) ->
           return moment.utc(item.date).startOf('date').format('LL (ddd)')
         .join('\n')
         msg.send "次回　koiki　の開催可能日は\n#{dates}\nデス"
