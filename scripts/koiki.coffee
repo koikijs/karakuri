@@ -36,12 +36,15 @@ module.exports = (robot) ->
     robot.http('https://monstera.herokuapp.com/api/koikijs/next').get() (err, res, body) ->
 
       data = JSON.parse(body)
-      if data.candidates.length == 0
+      if data.candidates.length == 0 && data.noplans.length
         msg.send "開催可能な日が　見つけられない　デス\n" +
                  "https://monstera.herokuapp.com/events/koikijs/availables\n" +
                  "#{data.noplans.join(', ')} の予定が一つも入ってない　デス\n" +
-                 "はやく　いれんかい　ボケ　デス\n"
-
+                 "はやく　いれんかい　ボケ　デス"
+      else if data.candidates.length == 0 && !data.noplans.length
+        msg.send "開催可能な日が　見つけられない　デス\n" +
+                 "https://monstera.herokuapp.com/events/koikijs/availables\n" +
+                 "みんなの予定が合わない　デス"
       else
         dates = data.candidates.map (item) ->
           return moment.utc(item.date).startOf('date').format('LL (ddd)')
