@@ -39,7 +39,7 @@ module.exports = (robot) ->
             "title": "#{data.title}",
             "text": "#{data.menuType} (#{cafeteriaId})",
             "image_url": "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200",
-            "footer": "#{data.calories} kcal #{price}"
+            "footer": "#{data.calories} kcal, protein:#{data.component.protein} g, #{price}"
           })
         json = JSON.stringify({attachments: attachments});
         payload = "payload=" + encodeURIComponent(json)
