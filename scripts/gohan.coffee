@@ -29,24 +29,27 @@ module.exports = (robot) ->
       .query(menuDate: toYYYYMMDD(date), mealTime: mealTime, cafeteriaId: cafeteriaId)
       .get() (err, res, body) ->
         foods = JSON.parse(body)['data']
-        robot.send gohan, "#{datestr}#{daynight}ごはん　#{cafeteriaId}は　こちらデス"
-        attachments = []
-        foods.map (data) ->
-          imageURL = data.imageURL.replace(/^https\:\/\//, '')
-          price = if data.price > 0 then ", #{data.price}円" else ""
-          attachments.push({
-            "color": "#36a64f",
-            "title": "#{data.title}",
-            "text": "#{data.menuType} (#{cafeteriaId})",
-            "image_url": "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200",
-            "footer": "#{data.calories} kcal, protein:#{data.component.protein} g, #{price}"
-          })
-        json = JSON.stringify({attachments: attachments});
-        payload = "payload=" + encodeURIComponent(json)
-        robot.http(process.env.HUBOT_SLACK_INCOMING_WEBHOOK_GOHAN)
-          .header('content-type', 'application/x-www-form-urlencoded')
-          .post(payload) (err, res, body) ->
-            console.log err
+        if foods.length == 0
+          robot.send gohan, "#{datestr}#{daynight}ごはん　#{cafeteriaId}は　ありませんデス"
+        else
+          robot.send gohan, "#{datestr}#{daynight}ごはん　#{cafeteriaId}は　こちらデス"
+          attachments = []
+          foods.map (data) ->
+            imageURL = data.imageURL.replace(/^https\:\/\//, '')
+            price = if data.price > 0 then ", #{data.price}円" else ""
+            attachments.push({
+              "color": "#36a64f",
+              "title": "#{data.title}",
+              "text": "#{data.menuType} (#{cafeteriaId})",
+              "image_url": "https://images.weserv.nl/?url=#{imageURL}&w=200&h=200",
+              "footer": "#{data.calories} kcal, protein:#{data.component.protein} g, #{price}"
+            })
+          json = JSON.stringify({attachments: attachments});
+          payload = "payload=" + encodeURIComponent(json)
+          robot.http(process.env.HUBOT_SLACK_INCOMING_WEBHOOK_GOHAN)
+            .header('content-type', 'application/x-www-form-urlencoded')
+            .post(payload) (err, res, body) ->
+              console.log err
 
   # Direct message
   robot.hear /^(|今日の|本日の|明日の|明後日の|明々後日の)(|ひる|昼|よる|夜|ばん|晩)(ごはん|ご飯|めし|飯)( |　)?(9|22)?F?$/i, (msg) ->
