@@ -22,7 +22,7 @@ module.exports = (robot) ->
         robot.send envelope, "開催可能な日が　見つけられないぞ！\n" +
                              "https://monstera.herokuapp.com/events/koicam/availables\n" +
                              "みんなの予定が合わないぞ！　予定をこじ開けろ！カモーン！\n" +
-                             "それぞれの空いてる予定日数はこれだけあるぜ！\n"
+                             "それぞれの空いてる予定日数はこれだけあるぜ！\n" +
                              counts.join('\n')
       else
         dates = data.candidates.map (item) ->
