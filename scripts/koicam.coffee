@@ -17,9 +17,13 @@ module.exports = (robot) ->
                              "#{data.noplans.join(', ')} の予定が一つも入ってないぞ！\n" +
                              "苦しいときこそ頑張るんだ。カモーン、俺について来い！"
       else if data.candidates.length == 0 && !data.noplans.length
+        counts = for name, count of data.counts
+          "#{name}: #{count}"
         robot.send envelope, "開催可能な日が　見つけられないぞ！\n" +
                              "https://monstera.herokuapp.com/events/koicam/availables\n" +
-                             "みんなの予定が合わないぞ！　予定をこじ開けろ！カモーン！"
+                             "みんなの予定が合わないぞ！　予定をこじ開けろ！カモーン！\n" +
+                             "それぞれの空いてる予定日数はこれだけあるぜ！\n"
+                             counts.join('\n')
       else
         dates = data.candidates.map (item) ->
           return "#{moment.utc(item.date).startOf('date').format('LL (ddd)')}: #{item.users.join(', ')}"
