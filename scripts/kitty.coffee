@@ -6,17 +6,17 @@ cron = require('cron').CronJob
 
 module.exports = (robot) ->
 
-  robot.hear /^\/kitty(| help)$/i, (msg) ->
+  robot.respond /^kitty help$/i, (msg) ->
     msg.reply(
-      "/kitty events : show all events\n" +
-      "/kitty make event {event name} : make new event\n" +
-      "/kitty add member {member name} to {event name} : add member to the event\n" +
-      "/kitty {paied member name} paied {price} for {payment name} of {event name} : add payment\n" +
-      "/kitty delete {payment name} of {event name} : delete payment\n" +
-      "/kitty event {event name} : show summary of event payments\n"
+      "events : show all events\n" +
+      "make event {event name} : make new event\n" +
+      "add member {member name} to {event name} : add member to the event\n" +
+      "{paied member name} paied {price} for {payment name} of {event name} : add payment\n" +
+      "delete {payment name} of {event name} : delete payment\n" +
+      "event {event name} : show summary of event payments\n"
     )
 
-  robot.hear /^\/kitty events$/i, (msg) ->
+  robot.respond /^events$/i, (msg) ->
     robot.http("https://chaus.herokuapp.com/apis/kitty/events")
       .get() (err, res, body) ->
         events = JSON.parse(body).items;
@@ -25,7 +25,7 @@ module.exports = (robot) ->
         .join('\n')
         msg.reply("イベントのリストを表示し　マス\n#{list}")
 
-  robot.hear /^\/kitty (make|add) event (.+)$/i, (msg) ->
+  robot.respond /^(make|add) event (.+)$/i, (msg) ->
     name = msg.match[2];
     robot.http("https://chaus.herokuapp.com/apis/kitty/events")
       .header('Content-Type', 'application/json')
@@ -35,7 +35,7 @@ module.exports = (robot) ->
         console.log(err, body);
         msg.reply("#{name} イベントを作成しま　シタ");
 
-  robot.hear /^\/kitty add member (.+) to (.+)$/i, (msg) ->
+  robot.respond /^add member (.+) to (.+)$/i, (msg) ->
     memberName = msg.match[1];
     eventName = msg.match[2];
     robot.http("https://chaus.herokuapp.com/apis/kitty/people")
@@ -57,7 +57,7 @@ module.exports = (robot) ->
                   })) (err, res, body) ->
                     msg.reply "#{memberName}を#{eventName}に　追加しました　デス";
 
-  robot.hear /^\/kitty (.+) paied (.+) for (.+) of (.+)$/i, (msg) ->
+  robot.respond /^(.+) paied (.+) for (.+) of (.+)$/i, (msg) ->
     memberName = msg.match[1];
     amount = msg.match[2];
     paymentName = msg.match[3];
@@ -81,7 +81,7 @@ module.exports = (robot) ->
                   })) (err, res, body) ->
                     msg.reply "#{memberName}が　#{amount}円 を #{paymentName}のために #{eventName}で　払いました　デス";
 
-  robot.hear /^\/kitty delete (.+) payment of (.+)$/i, (msg) ->
+  robot.respond /^delete (.+) payment of (.+)$/i, (msg) ->
     paymentName = msg.match[3];
     eventName = msg.match[4];
     robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
@@ -95,7 +95,7 @@ module.exports = (robot) ->
               .delete() (err, res, body) ->
                 msg.reply "#{paymentName}を削除しました　デス";
 
-  robot.hear /^\/kitty event (.+)$/i, (msg) ->
+  robot.respond /^event (.+)$/i, (msg) ->
     eventName = msg.match[1];
     robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
       .get() (err, res, body) ->
