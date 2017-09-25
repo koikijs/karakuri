@@ -59,7 +59,7 @@ module.exports = (robot) ->
 
   robot.respond /(.+) paid (.+) for (.+) of (.+)$/i, (msg) ->
     memberName = msg.match[1];
-    amount = msg.match[2];
+    amount = msg.match[2].replace(/(,|円)/g, '');
     paymentName = msg.match[3];
     eventName = msg.match[4];
     robot.http("https://chaus.herokuapp.com/apis/kitty/people?name=#{memberName}")
