@@ -113,7 +113,9 @@ module.exports = (robot) ->
                       liquidFund[from.person.id][to.person.id] = 0;
                 payments = JSON.parse(body).items;
                 total = 0;
+                paymentMessages = [];
                 payments.map (payment) ->
+                  paymentMessages.push("#{payment.name} (#{payment.amount}円) paid by #{payment.person.id}");
                   costPerPerson = Math.ceil(payment.amount / members.length);
                   members.map (member) ->
                     if payment.person.id != member.person.id
@@ -126,6 +128,7 @@ module.exports = (robot) ->
                     if liquidFund[from][to] > liquidFund[to][from]
                       liquidMessages.push("#{from} は #{to} に #{liquidFund[from][to] - liquidFund[to][from]}円　払ってくだ　サイ")
 
-                msg.reply "合計 #{total}円　デス";
-                msg.reply "一人当たり #{Math.ceil(total / members.length)}円　デス";
-                msg.reply "#{liquidMessages.join("\n")}"
+                msg.reply "#{paymentMessages.join("\n")}\n\n" +
+                          "合計 #{total}円　デス\n" +
+                          "一人当たり #{Math.ceil(total / members.length)}円　デス\n\n" +
+                          "#{liquidMessages.join("\n")}"
