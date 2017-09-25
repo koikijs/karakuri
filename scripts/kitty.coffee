@@ -8,12 +8,12 @@ module.exports = (robot) ->
 
   robot.respond /kitty help$/i, (msg) ->
     msg.reply(
-      "events : show all events\n" +
-      "make event {event name} : make new event\n" +
-      "add member {member name} to {event name} : add member to the event\n" +
-      "{paied member name} paied {price} for {payment name} of {event name} : add payment\n" +
-      "delete {payment name} of {event name} : delete payment\n" +
-      "event {event name} : show summary of event payments\n"
+      "@karakuri events : show all events\n" +
+      "@karakuri make event {event name} : make new event\n" +
+      "@karakuri add member {member name} to {event name} : add member to the event\n" +
+      "@karakuri {paid member name} paid {price} for {payment name} of {event name} : add payment\n" +
+      "@karakuri delete {payment name} of {event name} : delete payment\n" +
+      "@karakuri event {event name} : show summary of event payments\n"
     )
 
   robot.respond /events$/i, (msg) ->
@@ -57,7 +57,7 @@ module.exports = (robot) ->
                   })) (err, res, body) ->
                     msg.reply "#{memberName}を#{eventName}に　追加しました　デス";
 
-  robot.respond /(.+) paied (.+) for (.+) of (.+)$/i, (msg) ->
+  robot.respond /(.+) paid (.+) for (.+) of (.+)$/i, (msg) ->
     memberName = msg.match[1];
     amount = msg.match[2];
     paymentName = msg.match[3];
