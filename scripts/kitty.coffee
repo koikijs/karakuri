@@ -117,15 +117,15 @@ module.exports = (robot) ->
                   costPerPerson = Math.ceil(payment.amount / members.length);
                   members.map (member) ->
                     if payment.person.id != member.person.id
-                      liquidFund[member.person.id][payment.person.id] = costPerPerson;
+                      liquidFund[member.person.id][payment.person.id] += costPerPerson;
                   total += payment.amount
 
                 liquidMessages = [];
                 Object.keys(liquidFund).map (from) ->
                   Object.keys(liquidFund[from]).map (to) ->
                     if liquidFund[from][to] > liquidFund[to][from]
-                      liquidMessages.push("#{from} は #{to} に #{liquidFund[from][to] - liquidFund[to][from]}　払ってくだ　サイ")
+                      liquidMessages.push("#{from} は #{to} に #{liquidFund[from][to] - liquidFund[to][from]}円　払ってくだ　サイ")
 
                 msg.reply "合計 #{total}円　デス";
-                msg.reply "一人当たり #{total / members.length}円　デス";
+                msg.reply "一人当たり #{Math.ceil(total / members.length)}円　デス";
                 msg.reply "#{liquidMessages.join("\n")}"
