@@ -105,30 +105,41 @@ module.exports = (robot) ->
             members = JSON.parse(body).items;
             robot.http("https://chaus.herokuapp.com/apis/kitty/payments?event=#{event.id}")
               .get() (err, res, body) ->
-                liquidFund = {};
-                members.map (from) ->
-                  liquidFund[from.person.id] = {};
-                  members.map (to) ->
-                    if from.person.id != to.person.id
-                      liquidFund[from.person.id][to.person.id] = 0;
                 payments = JSON.parse(body).items;
+
+                # calculate cost per person, total amount
                 total = 0;
                 paymentMessages = [];
+                payPerPerson = {};
+                members.map (member) ->
+                  payPerPerson[member.person.id] = 0
+
                 payments.map (payment) ->
                   paymentMessages.push("#{payment.name} (#{payment.amount}円) paid by #{payment.person.id}");
-                  costPerPerson = Math.ceil(payment.amount / members.length);
-                  members.map (member) ->
-                    if payment.person.id != member.person.id
-                      liquidFund[member.person.id][payment.person.id] += costPerPerson;
+                  payPerPerson[payment.person.id] += payment.amount
                   total += payment.amount
 
+                # calculate avarage cost
+                averageCost = Math.ceil(total / members.length)
+
+                # find person who have maximum payment
+                maximumPaider = ''
+                maximumPayment = 0
+                Object.keys(payPerPerson).forEach (person) ->
+                  if payPerPerson[person] > maximumPayment
+                    maximumPayment = payPerPerson[person]
+                    maximumPaider = person
+
+                # calculate liquid
                 liquidMessages = [];
-                Object.keys(liquidFund).map (from) ->
-                  Object.keys(liquidFund[from]).map (to) ->
-                    if liquidFund[from][to] > liquidFund[to][from]
-                      liquidMessages.push("#{from} は #{to} に #{liquidFund[from][to] - liquidFund[to][from]}円　払ってくだ　サイ")
+                Object.keys(payPerPerson).forEach (person) ->
+                  if person != maximumPaider
+                    if averageCost - payPerPerson[person] > 0
+                      liquidMessages.push("#{person} は #{maximumPaider} に #{averageCost - payPerPerson[person]}円　払ってくだ　サイ")
+                    else
+                      liquidMessages.push("#{maximumPaider} は #{person} に #{payPerPerson[person] - averageCost}円　払ってくだ　サイ")
 
                 msg.reply "#{paymentMessages.join("\n")}\n\n" +
                           "合計 #{total}円　デス\n" +
-                          "一人当たり #{Math.ceil(total / members.length)}円　デス\n\n" +
+                          "一人当たり #{averageCost}円　デス\n\n" +
                           "#{liquidMessages.join("\n")}"
