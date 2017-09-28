@@ -4,6 +4,16 @@ moment = require 'moment'
 moment.locale 'ja'
 cron = require('cron').CronJob
 
+liquid = (payPerPerson, messages) ->
+  if payPerPerson.length > 1
+    from = _.minBy(payPerPerson, 'amount')
+    to = _.maxBy(payPerPerson, 'amount')
+    messages.push "#{from.person} は #{to.person} に #{from.amount * -1}円　払ってくだ　サイ"
+    to.amount += from.amount
+    return liquid(_.reject(payPerPerson, { person: from.person }), messages)
+  else
+    return messages
+
 module.exports = (robot) ->
 
   robot.respond /kitty help$/i, (msg) ->
@@ -105,30 +115,32 @@ module.exports = (robot) ->
             members = JSON.parse(body).items;
             robot.http("https://chaus.herokuapp.com/apis/kitty/payments?event=#{event.id}")
               .get() (err, res, body) ->
-                liquidFund = {};
-                members.map (from) ->
-                  liquidFund[from.person.id] = {};
-                  members.map (to) ->
-                    if from.person.id != to.person.id
-                      liquidFund[from.person.id][to.person.id] = 0;
                 payments = JSON.parse(body).items;
+
+                # calculate cost per person, total amount
                 total = 0;
                 paymentMessages = [];
-                payments.map (payment) ->
+                payPerPerson = [];
+                members.forEach (member) ->
+                  payPerPerson.push({ person: member.person.id, amount: 0 })
+
+                payments.forEach (payment) ->
                   paymentMessages.push("#{payment.name} (#{payment.amount}円) paid by #{payment.person.id}");
-                  costPerPerson = Math.ceil(payment.amount / members.length);
-                  members.map (member) ->
-                    if payment.person.id != member.person.id
-                      liquidFund[member.person.id][payment.person.id] += costPerPerson;
+                  _.find(payPerPerson, { person: payment.person.id }).amount += payment.amount
                   total += payment.amount
 
+                # calculate avarage cost
+                averageCost = Math.ceil(total / members.length)
+
+                # re-calculate, how much need to pay in each person
+                members.forEach (member) ->
+                  _.find(payPerPerson, { person: member.person.id}).amount -= averageCost
+
+                # calculate liquid
                 liquidMessages = [];
-                Object.keys(liquidFund).map (from) ->
-                  Object.keys(liquidFund[from]).map (to) ->
-                    if liquidFund[from][to] > liquidFund[to][from]
-                      liquidMessages.push("#{from} は #{to} に #{liquidFund[from][to] - liquidFund[to][from]}円　払ってくだ　サイ")
+                liquidMessages = liquid(payPerPerson, []);
 
                 msg.reply "#{paymentMessages.join("\n")}\n\n" +
                           "合計 #{total}円　デス\n" +
-                          "一人当たり #{Math.ceil(total / members.length)}円　デス\n\n" +
+                          "一人当たり #{averageCost}円　デス\n\n" +
                           "#{liquidMessages.join("\n")}"
