@@ -121,10 +121,10 @@ module.exports = (robot) ->
                 total = 0;
                 paymentMessages = [];
                 payPerPerson = [];
-                members.map (member) ->
+                members.forEach (member) ->
                   payPerPerson.push({ person: member.person.id, amount: 0 })
 
-                payments.map (payment) ->
+                payments.forEach (payment) ->
                   paymentMessages.push("#{payment.name} (#{payment.amount}円) paid by #{payment.person.id}");
                   _.find(payPerPerson, { person: payment.person.id }).amount += payment.amount
                   total += payment.amount
@@ -133,7 +133,7 @@ module.exports = (robot) ->
                 averageCost = Math.ceil(total / members.length)
 
                 # re-calculate, how much need to pay in each person
-                members.map (member) ->
+                members.forEach (member) ->
                   _.find(payPerPerson, { person: member.person.id}).amount -= averageCost
 
                 # calculate liquid
