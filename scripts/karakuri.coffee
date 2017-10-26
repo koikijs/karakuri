@@ -32,6 +32,13 @@ module.exports = (robot) ->
     robot.logger.error err
     robot.logger.error res
 
+  robot.hear /^tell me after (\d).*mins$/, (msg) ->
+    duration = msg.match[1];
+    msg.send "了解　デス"
+    setTimeout(() ->
+      msg.send "#{duration}分 経ちました　デス"
+    , duration * 60 * 1000);
+
   robot.hear /^(js|sh)$/, (msg) ->
     mode = msg.match[1];
     msg.send "#{mode} モードを起動します　デス"
