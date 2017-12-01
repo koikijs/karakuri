@@ -3,14 +3,13 @@
 moment = require 'moment'
 moment.locale 'ja'
 cron = require('cron').CronJob
-envelope = room: "C0JHEPQ94" # general
 taka66 = room: "C0JHEPQ94", user: "U0JH92D60" # taka66
 # envelope = room: "C217B7QG0" # test
 mode = 'normal'
 
 module.exports = (robot) ->
 
-  next = (event) ->
+  next = (event, envelope) ->
     robot.http('https://monstera.herokuapp.com/api/' + event + '/next').get() (err, res, body) ->
       if res.statusCode isnt 200
         robot.send envelope, "そんなイベントは　無いデス　ボケ　デス"
@@ -36,10 +35,13 @@ module.exports = (robot) ->
     next ""
   , null, true, "Asia/Tokyo"
 
-  robot.hear /(次|つぎ)の(| |　)([a-zA-Z0-9]+)(| |　)(|は)(| |　)いつ(|ごろ|頃)(|になる|になりそう|ですか|になりそうですか|にする)(？|\?)/i, (msg) ->
+  robot.hear /(次|つぎ)の(| |　)(小粋|[a-zA-Z0-9]+)(| |　)(|は)(| |　)いつ(|ごろ|頃)(|になる|になりそう|ですか|になりそうですか|にする)(？|\?)/i, (msg) ->
     event =  msg.match[3]
     if event == 'koiki' || event == '小粋'
       event = 'koikijs'
+      envelope = room: "C0JHEPQ94" # general
+    else
+      envelope = room: "##{msg.message.room}"
 
     msg.send 'ただいま確認中　デス'
-    next event
+    next event, envelope
