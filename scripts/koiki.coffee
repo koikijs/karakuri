@@ -41,7 +41,8 @@ module.exports = (robot) ->
       event = 'koikijs'
       envelope = room: "C0JHEPQ94" # general
     else
-      envelope = room: "##{msg.message.room}"
+      console.log(msg.message.room)
+      envelope = room: msg.message.room
 
     msg.send 'ただいま確認中　デス'
     next event, envelope
