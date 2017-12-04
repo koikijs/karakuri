@@ -27,7 +27,7 @@ module.exports = (robot) ->
         dates = data.candidates.map (item) ->
           return "#{moment.utc(item.date).startOf('date').format('LL (ddd)')}: #{item.users.join(', ')}"
         .join('\n')
-        robot.send envelope, "次回　koiki　の開催可能日は\n#{dates}\nデス"
+        robot.send envelope, "次回　" + event + "　の開催可能日は\n#{dates}\nデス"
         robot.send taka66,   "場所の予約のほど　よろしくお願いします　デス"
 
   # Koiki
