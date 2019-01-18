@@ -10,7 +10,7 @@ module.exports = (robot) ->
 
   # Topics
   new cron '0 0 15 * * *', () ->
-    robot.http("https://chaus.herokuapp.com/apis/karakuri/tags").get() (err, res, body) ->
+    robot.http("https://chaus.now.sh/apis/karakuri/tags").get() (err, res, body) ->
       tags = JSON.parse(body).items.map (item) ->
         return item.name
       tag = tags[Math.floor(Math.random() * tags.length)]

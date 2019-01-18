@@ -10,18 +10,18 @@ mode = 'normal'
 module.exports = (robot) ->
 
   next = (event, envelope) ->
-    robot.http('https://monstera.herokuapp.com/api/' + event + '/next').get() (err, res, body) ->
+    robot.http('https://monstera.now.sh/api/' + event + '/next').get() (err, res, body) ->
       if res.statusCode isnt 200
         robot.send envelope, "そんなイベントは　無いデス　ボケ　デス"
       data = JSON.parse(body)
       if data.candidates.length == 0 && data.noplans.length
         robot.send envelope, "開催可能な日が　見つけられない　デス\n" +
-                             "https://monstera.herokuapp.com/events/" + event + "/availables\n" +
+                             "https://monstera.now.sh/events/" + event + "/availables\n" +
                              "#{data.noplans.join(', ')} の予定が一つも入ってない　デス\n" +
                              "はやく　いれんかい　ボケ　デス"
       else if data.candidates.length == 0 && !data.noplans.length
         robot.send envelope, "開催可能な日が　見つけられない　デス\n" +
-                             "https://monstera.herokuapp.com/events/" + event + "/availables\n" +
+                             "https://monstera.now.sh/events/" + event + "/availables\n" +
                              "みんなの予定が合わない　デス"
       else
         dates = data.candidates.map (item) ->

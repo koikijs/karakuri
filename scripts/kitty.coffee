@@ -27,7 +27,7 @@ module.exports = (robot) ->
     )
 
   robot.respond /events$/i, (msg) ->
-    robot.http("https://chaus.herokuapp.com/apis/kitty/events")
+    robot.http("https://chaus.now.sh/apis/kitty/events")
       .get() (err, res, body) ->
         events = JSON.parse(body).items;
         list = events.map (event) ->
@@ -37,7 +37,7 @@ module.exports = (robot) ->
 
   robot.respond /(make|add) event (.+)$/i, (msg) ->
     name = msg.match[2];
-    robot.http("https://chaus.herokuapp.com/apis/kitty/events")
+    robot.http("https://chaus.now.sh/apis/kitty/events")
       .header('Content-Type', 'application/json')
       .post(JSON.stringify({
         name: name,
@@ -48,18 +48,18 @@ module.exports = (robot) ->
   robot.respond /add member (.+) to (.+)$/i, (msg) ->
     memberName = msg.match[1];
     eventName = msg.match[2];
-    robot.http("https://chaus.herokuapp.com/apis/kitty/people")
+    robot.http("https://chaus.now.sh/apis/kitty/people")
       .header('Content-Type', 'application/json')
       .post(JSON.stringify({
         name: memberName,
       })) (err, res, body) ->
-        robot.http("https://chaus.herokuapp.com/apis/kitty/people?name=#{memberName}")
+        robot.http("https://chaus.now.sh/apis/kitty/people?name=#{memberName}")
           .get() (err, res, body) ->
             person = JSON.parse(body).items[0];
-            robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
+            robot.http("https://chaus.now.sh/apis/kitty/events?name=#{eventName}")
               .get() (err, res, body) ->
                 event = JSON.parse(body).items[0];
-                robot.http("https://chaus.herokuapp.com/apis/kitty/members")
+                robot.http("https://chaus.now.sh/apis/kitty/members")
                   .header('Content-Type', 'application/json')
                   .post(JSON.stringify({
                     event: event.id,
@@ -72,16 +72,16 @@ module.exports = (robot) ->
     amount = msg.match[2].replace(/(,|円)/g, '');
     paymentName = msg.match[3];
     eventName = msg.match[4];
-    robot.http("https://chaus.herokuapp.com/apis/kitty/people?name=#{memberName}")
+    robot.http("https://chaus.now.sh/apis/kitty/people?name=#{memberName}")
       .get() (err, res, body) ->
         person = JSON.parse(body).items[0];
-        robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
+        robot.http("https://chaus.now.sh/apis/kitty/events?name=#{eventName}")
           .get() (err, res, body) ->
             event = JSON.parse(body).items[0];
-            robot.http("https://chaus.herokuapp.com/apis/kitty/members?event=#{event.id}&person=#{person.id}")
+            robot.http("https://chaus.now.sh/apis/kitty/members?event=#{event.id}&person=#{person.id}")
               .get() (err, res, body) ->
                 member = JSON.parse(body).items[0];
-                robot.http("https://chaus.herokuapp.com/apis/kitty/payments")
+                robot.http("https://chaus.now.sh/apis/kitty/payments")
                   .header('Content-Type', 'application/json')
                   .post(JSON.stringify({
                     person: person.id,
@@ -94,26 +94,26 @@ module.exports = (robot) ->
   robot.respond /delete (.+) payment of (.+)$/i, (msg) ->
     paymentName = msg.match[3];
     eventName = msg.match[4];
-    robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
+    robot.http("https://chaus.now.sh/apis/kitty/events?name=#{eventName}")
       .get() (err, res, body) ->
         event = JSON.parse(body).items[0];
-        robot.http("https://chaus.herokuapp.com/apis/kitty/payments?event=#{event.id}&name=#{paymentName}")
+        robot.http("https://chaus.now.sh/apis/kitty/payments?event=#{event.id}&name=#{paymentName}")
           .get() (err, res, body) ->
             payment = JSON.parse(body).items[0];
-            robot.http("https://chaus.herokuapp.com/apis/kitty/payments/#{payment.id}")
+            robot.http("https://chaus.now.sh/apis/kitty/payments/#{payment.id}")
               .header('Content-Type', 'application/json')
               .delete() (err, res, body) ->
                 msg.reply "#{paymentName}を削除しました　デス";
 
   robot.respond /event (.+)$/i, (msg) ->
     eventName = msg.match[1];
-    robot.http("https://chaus.herokuapp.com/apis/kitty/events?name=#{eventName}")
+    robot.http("https://chaus.now.sh/apis/kitty/events?name=#{eventName}")
       .get() (err, res, body) ->
         event = JSON.parse(body).items[0];
-        robot.http("https://chaus.herokuapp.com/apis/kitty/members?event=#{event.id}")
+        robot.http("https://chaus.now.sh/apis/kitty/members?event=#{event.id}")
           .get() (err, res, body) ->
             members = JSON.parse(body).items;
-            robot.http("https://chaus.herokuapp.com/apis/kitty/payments?event=#{event.id}")
+            robot.http("https://chaus.now.sh/apis/kitty/payments?event=#{event.id}")
               .get() (err, res, body) ->
                 payments = JSON.parse(body).items;
 
