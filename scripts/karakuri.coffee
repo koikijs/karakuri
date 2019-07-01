@@ -4,6 +4,7 @@ moment = require 'moment'
 moment.locale 'ja'
 cron = require('cron').CronJob
 envelope = room: "C0JHEPQ94" # general
+camp2019 = room: "CH8FKU8QH" # camp2019
 test = room: "C217B7QG0" # test
 gohan = room: "C2L1Y13R6" # gohan
 techtopics = room: "C2LKUHVPD" # techtopics
@@ -84,7 +85,7 @@ module.exports = (robot) ->
 
   # startup
   robot.send test, 'むくり'
-  robot.send envelope, 'ナブチ様　起きてください　デス'
+  robot.send camp2019, 'キャンプまであと' + moment('2019-07-11').startOf('day').diff(moment().startOf('day')) / 86400000 + "日デス"
   robot.http('https://nabnab-bot.herokuapp.com/').get() (err, res, body) ->
     robot.send envelope, 'ナブチ様　遅刻　デス'
   setTimeout () ->
