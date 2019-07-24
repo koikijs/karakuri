@@ -85,7 +85,9 @@ module.exports = (robot) ->
 
   # startup
   robot.send test, 'むくり'
-  robot.send camp2019, "キャンプまであと #{moment('2020-07-23').startOf('day').diff(moment().startOf('day')) / 86400000}日デス"
+  remain = moment('2020-07-23').startOf('day').diff(moment().startOf('day')) / 86400000
+  if remain % 50 == 0
+    robot.send camp2019, "キャンプまであと #{remain}日デス"
   robot.http('https://nabnab-bot.herokuapp.com/').get() (err, res, body) ->
     robot.send test, 'ナブチ様　遅刻　デス'
   setTimeout () ->
